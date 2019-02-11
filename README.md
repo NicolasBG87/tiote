@@ -103,7 +103,12 @@ _Time tracking app - Nikola Bojanovic_
   * Server - Heroku
   * UI - GitHub pages
   
-### License
+## Mockup
+![Register](./wf-img/register.png)
+
+![Dashboard](./wf-img/dashboard.png)
+  
+## License
 You may use the content of this project for both commercial and non-commercial applications. It is welcomed, but not mandatory, to credit the author in some form (visible on the UI or a comment inside the code)
 ##### Comment template
 ```javascript
