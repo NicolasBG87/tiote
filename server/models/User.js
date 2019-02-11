@@ -85,6 +85,14 @@ const UserSchema = new Schema({
     min: [0, 'Session duration cannot be set below 0 minutes'],
     max: [120, 'Session duration cannot be set above 120 minutes'],
     default: 0
+  },
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  locked: {
+    type: Boolean,
+    default: false
   }
 });
 
