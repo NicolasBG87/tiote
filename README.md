@@ -1,9 +1,9 @@
-#TIOTE - Time Is Of The Essence
+# TIOTE - Time Is Of The Essence
 _Time tracking app - Nikola Bojanovic_
 
-##User Stories
+## User Stories
 
-###Register & Login
+### Register & Login
   * Register
     * Full Name
     * Email
@@ -17,7 +17,7 @@ _Time tracking app - Nikola Bojanovic_
     * Forgot password? (requires email, secret question/answer)
 <p>* After successful login and if the user profile is not complete, the user is routed to profile page. The user cannot use the timer until the profile is complete. Once the profile is validated, the user will be routed to Overview page on successful logins.</p>
 
-###Overview
+### Overview
   * Current date is a default view
   * Date picker (selecting a date opens up a report for a selection)
   * Reports for selected date
@@ -34,12 +34,12 @@ _Time tracking app - Nikola Bojanovic_
   * Sort by Name, Project, Employer, Duration, Earnings
   * Edit sessions (you cannot modify duration, earnings and hourly rate fields)
     
-###Analytics
+### Analytics
   * Visual performance representation
   * Graph changes depending on the selected parameter (Duration, Earnings, Mixed)
   * Scopes to analyse: Week, Month, Year
     
-###Session
+### Session
   * Control current session
   * Ability to limit the session duration
   * Start a session by filling the form
@@ -53,7 +53,7 @@ _Time tracking app - Nikola Bojanovic_
     * Regular: add a confirmation before stopping to avoid accidental breaks
   <p>* While the timer is running the backdrop will prevent the navigation and scrolling. If a user changes the url or closes the tab, app will react as if a timer was stopped regulary and send the data to the server.</p>
 
-###Profile
+### Profile
   * Add/Change photo (if no photo is specified, the placeholder will be used)
   * Change password (requires current password, secret question/answer)
   * Request email change (requires current password, secret question/answer)
@@ -63,7 +63,7 @@ _Time tracking app - Nikola Bojanovic_
   * Set global language localization (EN, SR, DE, ES, FR)
   * Set global theme (Dark, Light, Aqua)
   
-###Roles
+### Roles
   * user
     * Can register & login
     * Edit own profile
@@ -84,28 +84,28 @@ _Time tracking app - Nikola Bojanovic_
     * Create, Delete, Update user and admin roles
     * Create, Delete, Update sessions and reports
 
-##Tech Spec
+## Tech Spec
 
-###UI
+### UI
   * React >= 16.8
   * Material UI
   * Material Icons
   * Roboto Google fonts
 <p>* React hooks and React context API will be used for app state management and manipulation with localization and theme.</p>
 
-###Server
+### Server
   * NodeJS 10.15.1
   * ExpressJS 4.16.4
   * MongoDB
   * Cloudinary
 
-###Deployment
+### Deployment
   * Server - Heroku
   * UI - GitHub pages
   
-###License
+### License
 You may use the content of this project for both commercial and non-commercial applications. It is welcomed, but not mandatory, to credit the author in some form (visible on the UI or a comment inside the code)
-#####Comment template
+##### Comment template
 ```javascript
 /*
  * Credits to
