@@ -389,7 +389,6 @@ router.patch('/verifypasswordreset', (req, res, next) => {
       secretAnswer !== user.secretAnswer
     ) return next({message: 'Secret Question and/or Answer is not valid'});
     const isPasswordValid = pwValidator(newPassword);
-    console.log(isPasswordValid);
     if (isPasswordValid !== '') return next({message: isPasswordValid});
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newPassword, salt, (err, hash) => {
