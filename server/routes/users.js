@@ -124,10 +124,12 @@ router.post('/verify', (req, res, next) => {
  * }
  */
 router.post('/register', (req, res, next) => {
-  const {name, email} = req.body;
+  const {name, email, password} = req.body;
   User.findOne({email})
   .then(user => {
     if (user) return next({message: 'User already exists'});
+    const isPasswordValid = pwValidator(password);
+    if (isPasswordValid !== '') return next({message: isPasswordValid});
     const newUser = new User(req.body);
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -246,6 +248,8 @@ router.patch('/changepassword', (req, res, next) => {
           secretQuestion !== user.secretQuestion ||
           secretAnswer !== user.secretAnswer
         ) return next({message: 'Secret Question and/or Answer are invalid'});
+        const isPasswordValid = pwValidator(newPassword);
+        if (isPasswordValid !== '') return next({message: isPasswordValid});
         if (newPassword !== newPasswordConfirm) return next({message: 'New Password and New Password Confirm do not match'});
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newPassword, salt, (err, hash) => {
