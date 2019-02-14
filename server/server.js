@@ -20,11 +20,12 @@ app.use(express.json());
 const db = require('./config/keys.dev').mongoURI;
 
 // Connect with MongoDB
+mongoose.set('useCreateIndex', true);
+mongoose.set('runValidators', true);
 mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
-mongoose.set('useCreateIndex', true);
 
 const cloudCfg = require('./config/keys.dev').cloudinary;
 cloudinary.config(cloudCfg);
