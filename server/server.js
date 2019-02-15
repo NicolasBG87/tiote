@@ -8,6 +8,7 @@ const errorHandler = require('./helpers/error-handler');
 
 // Import routes
 const users = require('./routes/users');
+const sessions = require('./routes/sessions');
 
 // Define the server
 const app = express();
@@ -39,6 +40,9 @@ require('./config/cors')(app);
 
 // Subscribe to users routes
 app.use('/api/users', users);
+
+// Subscribe to sessions routes
+app.use('/api/sessions', sessions);
 
 // Handle errors
 app.use((err, req, res, next) => {

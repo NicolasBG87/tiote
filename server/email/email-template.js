@@ -52,7 +52,7 @@ module.exports = (requestBody, user, type) => {
     to: user.email,
     from: 'admin@tiote.com',
     subject: 'TIOTE - Account Verification',
-    text: 'Verify Account',
+    text: 'Please, enable HTML format in your email settings.',
     html: template[type]
   };
 };

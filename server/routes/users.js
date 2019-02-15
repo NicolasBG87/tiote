@@ -22,6 +22,7 @@ const tokenFormatter = require('../helpers/token-formatter');
 const multer = require('multer');
 const multerCfg = require('../config/multer');
 const User = require('../models/User');
+const Session = require('../models/Session');
 const pwValidator = require('../helpers/pw-validator');
 
 // using SendGrid's v3 Node.js Library
@@ -131,10 +132,15 @@ router.post('/register', (req, res, next) => {
     const isPasswordValid = pwValidator(password);
     if (isPasswordValid !== '') return next({message: isPasswordValid});
     const newUser = new User(req.body);
+    const session = new Session({
+      _id: user._id,
+      sessions: []
+    });
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.password, salt, (err, hash) => {
         if (err) return next(err);
         sgMail.send(mailTemplate(req.body, newUser, 'verify')).catch(err => next(err));
+        session.save().catch(err => next(err));
         newUser.password = hash;
         newUser.save()
         .then(user => res.json({
