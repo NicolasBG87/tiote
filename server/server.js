@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Define MongoDB key variable
-const db = require('./config/keys.dev').mongoURI;
+const db = require('./config/keys').mongoURI;
 
 // Connect with MongoDB
 mongoose.set('useCreateIndex', true);
@@ -28,7 +28,7 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-const cloudCfg = require('./config/keys.dev').cloudinary;
+const cloudCfg = require('./config/keys').cloudinary;
 cloudinary.config(cloudCfg);
 
 // Use and configure passport middleware
