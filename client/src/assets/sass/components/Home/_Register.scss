@@ -1,0 +1,95 @@
+.Register {
+  position: absolute;
+  left: 45%;
+  width: 530px;
+  height: 500px;
+  padding: 20px 40px;
+  background: $text-primary;
+  box-shadow: 0 4px 4px $overlay;
+  border-radius: 5px;
+
+  &__sqa {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  h1 {
+    color: $text-tertiary;
+    text-transform: uppercase;
+    font-size: 20px;
+    text-shadow: 0 2px 4px $overlay;
+  }
+
+  form {
+    margin: 25px 0;
+
+    .input-group {
+      position: relative;
+      margin: 15px 0;
+
+      img {
+        position: absolute;
+        right: 2px;
+        bottom: 25px
+      }
+    }
+
+    label {
+      color: $text-secondary;
+    }
+
+    p {
+      color: $danger;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    input, select {
+      color: $text-secondary;
+      border: none;
+      background: transparent;
+      padding: 5px 0;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      border-bottom: 1px solid $text-secondary;
+      padding-right: 30px;
+    }
+
+    .secret-answer {
+      display: inline;
+    }
+
+    select {
+      display: inline;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      align-self: flex-end;
+      padding: 10px 0;
+      border: none;
+      background: $success;
+      box-shadow: 0 4px 4px $overlay;
+      border-radius: 2px;
+      color: $text-primary;
+      text-transform: uppercase;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all .25s ease-in;
+      margin-top: 10px;
+
+      &:hover {
+        background: darken($success, 10%);
+      }
+
+      &:disabled {
+        background: $disabled;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

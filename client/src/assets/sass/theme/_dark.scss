@@ -1,4 +1,6 @@
-$bg-gradient: linear-gradient(29.29deg, #212332 0%, rgba(50, 51, 80, 0.95) 69.93%);
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+
+$bg-gradient: linear-gradient(30deg, #212332 0%, #474975 70%);
 
 $primary: #39385A;
 $primary-light: #46436B;
@@ -7,7 +9,6 @@ $secondary: #9895CE;
 $success: #6FCF97;
 $warning: #F2C94C;
 $danger: #EB5757;
-
 
 $overlay: rgba(0, 0, 0, .25);
 
@@ -18,3 +19,17 @@ $text-highlight: #535D93;
 $text-placeholder: rgba(#E5E0F5, .5);
 
 $disabled: #BDBDBD;
+
+html {
+  font-family: 'Roboto', sans-serif;
+}
+
+* {
+  outline: none;
+}
+
+body {
+  background: $bg-gradient no-repeat;
+  min-height: 100vh;
+  color: $text-primary;
+}

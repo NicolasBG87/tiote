@@ -1,0 +1,46 @@
+.Home-Cta {
+  height: 250px;
+  width: 900px;
+  display: flex;
+  justify-content: space-between;
+  background: $overlay;
+  box-shadow: 0 0 40px $overlay;
+  border-radius: 5px;
+
+  div {
+    text-align: center;
+    margin: 20px 50px;
+    width: 250px;
+
+    img {
+      height: 50px;
+      margin-top: 20px;
+    }
+
+    h1 {
+      font-size: 30px;
+      text-transform: uppercase;
+      padding: 0 20px;
+      margin: 20px 0;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      cursor: pointer;
+      background: transparent;
+      color: $text-primary;
+      border: 1px solid $text-primary;
+      border-radius: 2px;
+      box-shadow: 0 4px 4px $overlay;
+      padding: 10px 0;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: all .25s ease-in;
+      &:hover {
+        background: $text-primary;
+        color: $primary;
+      }
+    }
+  }
+}
