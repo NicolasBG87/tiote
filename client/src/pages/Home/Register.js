@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import validator                      from '../../helpers/validator';
-import axios                          from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import validator                                  from '../../helpers/validator';
+import axios                                      from 'axios';
+import { SpinnerContext }                         from '../../contexts/SpinnerContext';
+import { AlertContext }                           from '../../contexts/AlertContext';
 
-const Register = () => {
+const Register = props => {
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
@@ -17,6 +19,8 @@ const Register = () => {
     secretAnswer: false
   });
   let [isValid, setIsValid] = useState(false);
+  const spinner = useContext(SpinnerContext);
+  const alert = useContext(AlertContext);
 
   /**
    * Check form validity on component updates
@@ -82,17 +86,30 @@ const Register = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
+    spinner.showSpinner();
     axios.post('https://tiote.herokuapp.com/api/users/register', {
       name,
       email,
       password,
       secretQuestion,
       secretAnswer
-    });
+    })
+    .then(response => {
+      spinner.hideSpinner();
+      alert.setError(false);
+      alert.setMessage(response.data.message);
+      alert.showAlert();
+    })
+    .catch(error => {
+      spinner.hideSpinner();
+      alert.setError(true);
+      alert.setMessage(error.response.data.message);
+      alert.showAlert();
+    })
   };
 
   return (
-    <div className="Register">
+    <div className={`Register ${props.animate ? 'Register__animated' : ''}`}>
       <h1>Register</h1>
       <form onSubmit={e => handleSubmit(e)}>
         <div className="input-group">

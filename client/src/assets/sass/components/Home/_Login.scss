@@ -8,6 +8,28 @@
   box-shadow: 0 4px 4px $overlay;
   border-radius: 5px;
 
+  &__animated {
+    animation: logAnimation .5s ease-in;
+  }
+
+  @keyframes logAnimation {
+    0% {
+      right: 45%;
+    }
+    50% {
+      right: 35%;
+    }
+    70% {
+      right: 23%;
+    }
+    90% {
+      right: 25%;
+    }
+    100% {
+      right: 28%;
+    }
+  }
+
   h1 {
     color: $text-tertiary;
     text-transform: uppercase;
@@ -20,7 +42,7 @@
 
     .input-group {
       position: relative;
-      margin: 15px 0;
+      margin: 5px 0;
 
       img {
         position: absolute;

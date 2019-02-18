@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import validator                      from '../../helpers/validator';
 
-const Register = () => {
+const Register = props => {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
   let [formValidity, setFormValidity] = useState({
@@ -51,7 +51,7 @@ const Register = () => {
   };
 
   return (
-    <div className="Login">
+    <div className={`Login ${props.animate ? 'Login__animated' : ''}`}>
       <h1>Login</h1>
       <form>
         <div className="input-group">

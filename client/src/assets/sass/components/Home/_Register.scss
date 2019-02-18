@@ -8,6 +8,28 @@
   box-shadow: 0 4px 4px $overlay;
   border-radius: 5px;
 
+  &__animated {
+    animation: regAnimation .5s ease-in;
+  }
+
+  @keyframes regAnimation {
+    0% {
+      left: 45%;
+    }
+    50% {
+      left: 35%;
+    }
+    70% {
+      left: 23%;
+    }
+    90% {
+      left: 25%;
+    }
+    100% {
+      left: 28%;
+    }
+  }
+
   &__sqa {
     display: flex;
     justify-content: space-between;
@@ -25,7 +47,7 @@
 
     .input-group {
       position: relative;
-      margin: 15px 0;
+      margin: 5px 0;
 
       img {
         position: absolute;

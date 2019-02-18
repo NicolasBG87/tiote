@@ -1,0 +1,46 @@
+.Alert {
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, .5);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+
+  &__container {
+    width: 500px;
+    background: $text-primary;
+    text-align: center;
+
+    h1 {
+      color: $text-primary;
+      font-size: 20px;
+      padding: 10px 0;
+    }
+
+    p {
+      color: $primary;
+      padding: 50px 0;
+    }
+
+    button {
+      padding: 5px 50px;
+      background: $primary;
+      border: none;
+      border-radius: 2px;
+      color: $text-primary;
+      font-weight: bold;
+      margin-bottom: 20px;
+      cursor: pointer;
+      text-transform: uppercase;
+
+      &:hover {
+        background: lighten($primary, 10%);
+      }
+    }
+  }
+}
