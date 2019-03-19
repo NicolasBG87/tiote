@@ -1,0 +1,44 @@
+.Header {
+    display: flex;
+    align-items: center;
+    justify-content: stretch;
+    width: 100%;
+    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.25);
+    
+    & div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        background: $primary-light;
+    }
+    
+    &__logo {
+        width: 200px;
+        border-right: 2px solid $primary;
+    }
+    
+    &__greeting {
+        width: calc(100% - 400px);
+        font-size: 20px;
+        font-weight: 300;
+        
+        img {
+            height: 40px;
+            width: 40px;
+            margin-left: 20px;
+        }
+    }
+    
+    &__actions {
+        width: 200px;
+        font-size: 20px;
+        font-weight: 300;
+        cursor: pointer;
+        
+        img {
+            margin-left: 10px;
+            height: 30px;
+        }
+    }
+}

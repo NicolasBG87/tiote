@@ -25,13 +25,6 @@ const User = require('../models/User');
 const Session = require('../models/Session');
 const pwValidator = require('../helpers/pw-validator');
 
-// using SendGrid's v3 Node.js Library
-// https://github.com/sendgrid/sendgrid-nodejs
-const sgMail = require('@sendgrid/mail');
-const mailTemplate = require('../email/email-template');
-sgMail.setApiKey(keys.sendGrid);
-
-
 /**
  * LOGIN
  *
@@ -46,39 +39,39 @@ sgMail.setApiKey(keys.sendGrid);
  * }
  */
 router.post('/login', (req, res, next) => {
-  const {email, password} = req.body;
-  User.findOne({email})
-  .then(user => {
-    if (!user) return next({message: 'User not found'});
-    bcrypt.compare(password, user.password)
-    .then(isMatch => {
-      if (!isMatch) return next({message: 'Invalid Password'});
-      if (!user.verified) return next({message: 'Account not verified'});
-      const payload = {
-        id: user._id,
-        name: user.name,
-      };
-      jwt.sign(
-        payload,
-        keys.jwtKey,
-        {expiresIn: 604800},
-        (err, token) => {
-          return res.json({
-            success: true,
-            message: 'Login successful',
-            data: {
-              user: {
-                name: user.name,
-                email: user.email,
-                id: user._id
-              },
-              token: `Bearer ${token}`
-            }
-          })
+    const {email, password} = req.body;
+    User.findOne({email})
+        .then(user => {
+            if (!user) return next({message: 'User not found'});
+            bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (!isMatch) return next({message: 'Invalid Password'});
+                    if (!user.verified) return next({message: 'Account not verified'});
+                    const payload = {
+                        id: user._id,
+                        name: user.name,
+                    };
+                    jwt.sign(
+                        payload,
+                        keys.jwtKey,
+                        {expiresIn: 604800},
+                        (err, token) => {
+                            return res.json({
+                                success: true,
+                                message: 'Login successful',
+                                data: {
+                                    user: {
+                                        name: user.name,
+                                        email: user.email,
+                                        id: user._id
+                                    },
+                                    token: `Bearer ${token}`
+                                }
+                            })
+                        });
+                })
+                .catch(err => next(err));
         });
-    })
-    .catch(err => next(err));
-  });
 });
 
 /**
@@ -95,19 +88,19 @@ router.post('/login', (req, res, next) => {
  * }
  */
 router.post('/verify', (req, res, next) => {
-  const {_id, email} = req.body;
-  User.findOne({_id})
-  .then(user => {
-    if (!user) return next({message: 'User not found'});
-    if (email !== user.email) return next({message: `User ${user.email} is not authorized`});
-    user.verified = true;
-    user.save()
-    .then(user => res.json({
-      success: true,
-      message: `User ${user.name} successfully verified`
-    }))
-    .catch(err => next(err));
-  });
+    const {_id, email} = req.body;
+    User.findOne({_id})
+        .then(user => {
+            if (!user) return next({message: 'User not found'});
+            if (email !== user.email) return next({message: `User ${user.email} is not authorized`});
+            user.verified = true;
+            user.save()
+                .then(user => res.json({
+                    success: true,
+                    message: `User ${user.name} successfully verified`
+                }))
+                .catch(err => next(err));
+        });
 });
 
 /**
@@ -125,38 +118,39 @@ router.post('/verify', (req, res, next) => {
  * }
  */
 router.post('/register', (req, res, next) => {
-  const {name, email, password} = req.body;
-  User.findOne({email})
-  .then(user => {
-    if (user) return next({message: 'User already exists'});
-    const isPasswordValid = pwValidator(password);
-    if (isPasswordValid !== '') return next({message: isPasswordValid});
-    const newUser = new User(req.body);
-    const session = new Session({
-      _id: user._id,
-      sessions: []
-    });
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.password, salt, (err, hash) => {
-        if (err) return next(err);
-        sgMail.send(mailTemplate(req.body, newUser, 'verify')).catch(err => next(err));
-        session.save().catch(err => next(err));
-        newUser.password = hash;
-        newUser.save()
-        .then(user => res.json({
-          success: true,
-          message: 'User Created',
-          data: {
-            _id: user._id,
-            name,
-            email
-          }
-        }))
+    const {name, email, password} = req.body;
+    User.findOne({email})
+        .then(user => {
+            if (user) return next({message: 'User already exists'});
+            const isPasswordValid = pwValidator(password);
+            if (isPasswordValid !== '') return next({message: isPasswordValid});
+            const newUser = new User(req.body);
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if (err) return next(err);
+                    newUser.password = hash;
+                    newUser.save()
+                        .then(user => {
+                            const session = new Session({
+                                _id: user._id,
+                                sessions: []
+                            });
+                            session.save().catch(err => next(err));
+                            res.json({
+                                success: true,
+                                message: 'User Created',
+                                data: {
+                                    _id: user._id,
+                                    name,
+                                    email
+                                }
+                            })
+                        })
+                        .catch(err => next(err));
+                });
+            });
+        })
         .catch(err => next(err));
-      });
-    });
-  })
-  .catch(err => next(err));
 });
 
 /**
@@ -186,38 +180,39 @@ router.post('/register', (req, res, next) => {
  * }
  */
 router.patch('/update', (req, res, next) => {
-  const token = tokenFormatter(req.headers.authorization);
-  jwt.verify(token, keys.jwtKey, (err) => {
-    if (err) return next({message: 'You are not authorized'});
-    const upload = multer({storage: multerCfg.storage}).single('avatar');
-    // Parse form-data object
-    upload(req, res, err => {
-      if (err) return next(err);
-      // Avatar is saved as an url string
-      // If a new avatar is being sent trigger cloudinary api
-      // and retrieve new avatar url after successful upload
-      if (req.file) {
-        const path = req.file.path;
-        cloudinary.v2.uploader.upload(
-          path,
-          multerCfg.options(req.body._id),
-          (err, image) => multerCfg.callback(err, image, req, res, path, next)
-        );
-      } else {
-        User.findById(req.body._id, (err, user) => {
-          if (err) return next(err);
-          Object.assign(user, req.body);
-          user.save(err => {
+    const token = tokenFormatter(req.headers.authorization);
+    jwt.verify(token, keys.jwtKey, (err) => {
+        if (err) return next({message: 'You are not authorized'});
+        const upload = multer({storage: multerCfg.storage}).single('avatar');
+        // Parse form-data object
+        upload(req, res, err => {
             if (err) return next(err);
-            return res.json({
-              success: true,
-              message: `User ${user.name} successfully updated`
-            });
-          });
+            // Avatar is saved as an url string
+            // If a new avatar is being sent trigger cloudinary api
+            // and retrieve new avatar url after successful upload
+            if (req.file) {
+                const path = req.file.path;
+                cloudinary.v2.uploader.upload(
+                    path,
+                    multerCfg.options(req.body._id),
+                    (err, image) => multerCfg.callback(err, image, req, res, path, next)
+                );
+            }
+            else {
+                User.findById(req.body._id, (err, user) => {
+                    if (err) return next(err);
+                    Object.assign(user, req.body);
+                    user.save(err => {
+                        if (err) return next(err);
+                        return res.json({
+                            success: true,
+                            message: `User ${user.name} successfully updated`
+                        });
+                    });
+                });
+            }
         });
-      }
     });
-  });
 });
 
 /**
@@ -240,38 +235,38 @@ router.patch('/update', (req, res, next) => {
  * }
  */
 router.patch('/changepassword', (req, res, next) => {
-  const token = tokenFormatter(req.headers.authorization);
-  jwt.verify(token, keys.jwtKey, (err) => {
-    const {_id, email, password, newPassword, newPasswordConfirm, secretQuestion, secretAnswer} = req.body;
-    if (err) return next({message: 'You are not authorized'});
-    User.findById(_id, (err, user) => {
-      if (err) return next(err);
-      bcrypt.compare(password, user.password)
-      .then(isMatch => {
-        if (!isMatch) return next({message: 'Invalid Password'});
-        if (email !== user.email) return next({message: 'Entered email doesn\'t match'});
-        if (
-          secretQuestion !== user.secretQuestion ||
-          secretAnswer !== user.secretAnswer
-        ) return next({message: 'Secret Question and/or Answer are invalid'});
-        const isPasswordValid = pwValidator(newPassword);
-        if (isPasswordValid !== '') return next({message: isPasswordValid});
-        if (newPassword !== newPasswordConfirm) return next({message: 'New Password and New Password Confirm do not match'});
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newPassword, salt, (err, hash) => {
+    const token = tokenFormatter(req.headers.authorization);
+    jwt.verify(token, keys.jwtKey, (err) => {
+        const {_id, email, password, newPassword, newPasswordConfirm, secretQuestion, secretAnswer} = req.body;
+        if (err) return next({message: 'You are not authorized'});
+        User.findById(_id, (err, user) => {
             if (err) return next(err);
-            user.password = hash;
-            user.save()
-            .then(() => res.json({
-              success: true,
-              message: 'Password successfully updated.'
-            }))
-            .catch(err => next(err));
-          })
+            bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (!isMatch) return next({message: 'Invalid Password'});
+                    if (email !== user.email) return next({message: 'Entered email doesn\'t match'});
+                    if (
+                        secretQuestion !== user.secretQuestion ||
+                        secretAnswer !== user.secretAnswer
+                    ) return next({message: 'Secret Question and/or Answer are invalid'});
+                    const isPasswordValid = pwValidator(newPassword);
+                    if (isPasswordValid !== '') return next({message: isPasswordValid});
+                    if (newPassword !== newPasswordConfirm) return next({message: 'New Password and New Password Confirm do not match'});
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(newPassword, salt, (err, hash) => {
+                            if (err) return next(err);
+                            user.password = hash;
+                            user.save()
+                                .then(() => res.json({
+                                    success: true,
+                                    message: 'Password successfully updated.'
+                                }))
+                                .catch(err => next(err));
+                        })
+                    });
+                });
         });
-      });
     });
-  });
 });
 
 /**
@@ -293,32 +288,31 @@ router.patch('/changepassword', (req, res, next) => {
  * }
  */
 router.post('/changeemail', (req, res, next) => {
-  const token = tokenFormatter(req.headers.authorization);
-  jwt.verify(token, keys.jwtKey, (err) => {
-    const {_id, password, secretQuestion, secretAnswer, newEmail} = req.body;
-    if (err) return next({message: 'You are not authorized'});
-    User.findOne({newEmail})
-    .then((err, user) => {
-      if (err) return next(err);
-      if (user) return next({message: 'Email already taken'});
-      User.findById(_id, (err, user) => {
-        if (err) return next(err);
-        bcrypt.compare(password, user.password)
-        .then(isMatch => {
-          if (!isMatch) return next({message: 'Invalid Password'});
-          if (
-            secretQuestion !== user.secretQuestion ||
-            secretAnswer !== user.secretAnswer
-          ) return next({message: 'Secret Question and/or Answer are invalid'});
-          sgMail.send(mailTemplate(req.body, user, 'changeEmail'));
-          res.json({
-            success: true,
-            message: 'Email change requested'
-          });
-        });
-      });
+    const token = tokenFormatter(req.headers.authorization);
+    jwt.verify(token, keys.jwtKey, (err) => {
+        const {_id, password, secretQuestion, secretAnswer, newEmail} = req.body;
+        if (err) return next({message: 'You are not authorized'});
+        User.findOne({newEmail})
+            .then((err, user) => {
+                if (err) return next(err);
+                if (user) return next({message: 'Email already taken'});
+                User.findById(_id, (err, user) => {
+                    if (err) return next(err);
+                    bcrypt.compare(password, user.password)
+                        .then(isMatch => {
+                            if (!isMatch) return next({message: 'Invalid Password'});
+                            if (
+                                secretQuestion !== user.secretQuestion ||
+                                secretAnswer !== user.secretAnswer
+                            ) return next({message: 'Secret Question and/or Answer are invalid'});
+                            res.json({
+                                success: true,
+                                message: 'Email change requested'
+                            });
+                        });
+                });
+            });
     });
-  });
 });
 
 /**
@@ -335,18 +329,18 @@ router.post('/changeemail', (req, res, next) => {
  * }
  */
 router.patch('/verifyemailchange', (req, res, next) => {
-  const {_id, email} = req.body;
-  User.findOne({_id})
-  .then(user => {
-    if (!user) return next({message: 'User not found'});
-    user.email = email;
-    user.save()
-    .then(user => res.json({
-      success: true,
-      message: 'Email successfully updated'
-    }))
-    .catch(err => next(err));
-  });
+    const {_id, email} = req.body;
+    User.findOne({_id})
+        .then(user => {
+            if (!user) return next({message: 'User not found'});
+            user.email = email;
+            user.save()
+                .then(user => res.json({
+                    success: true,
+                    message: 'Email successfully updated'
+                }))
+                .catch(err => next(err));
+        });
 });
 
 /**
@@ -362,15 +356,14 @@ router.patch('/verifyemailchange', (req, res, next) => {
  * }
  */
 router.post('/resetpassword', (req, res, next) => {
-  const {email} = req.body;
-  User.findOne({email}, (err, user) => {
-    if (err) return next(err);
-    sgMail.send(mailTemplate(req.body, user, 'resetPassword'));
-    res.json({
-      success: true,
-      message: 'Password reset requested'
+    const {email} = req.body;
+    User.findOne({email}, (err, user) => {
+        if (err) return next(err);
+        res.json({
+            success: true,
+            message: 'Password reset requested'
+        });
     });
-  });
 });
 
 /**
@@ -390,29 +383,29 @@ router.post('/resetpassword', (req, res, next) => {
  * }
  */
 router.patch('/verifypasswordreset', (req, res, next) => {
-  const {_id, newPassword, newPasswordConfirm, secretQuestion, secretAnswer} = req.body;
-  User.findById(_id, (err, user) => {
-    if (!user) return next({message: 'User not found'});
-    if (newPassword !== newPasswordConfirm) return next({message: 'New Password and New Password Confirm do not match'});
-    if (
-      secretQuestion !== user.secretQuestion ||
-      secretAnswer !== user.secretAnswer
-    ) return next({message: 'Secret Question and/or Answer is not valid'});
-    const isPasswordValid = pwValidator(newPassword);
-    if (isPasswordValid !== '') return next({message: isPasswordValid});
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newPassword, salt, (err, hash) => {
-        if (err) return next(err);
-        user.password = hash;
-        user.save()
-        .then(() => res.json({
-          success: true,
-          message: 'Password successfully changed.'
-        }))
-        .catch(err => next(err));
-      })
+    const {_id, newPassword, newPasswordConfirm, secretQuestion, secretAnswer} = req.body;
+    User.findById(_id, (err, user) => {
+        if (!user) return next({message: 'User not found'});
+        if (newPassword !== newPasswordConfirm) return next({message: 'New Password and New Password Confirm do not match'});
+        if (
+            secretQuestion !== user.secretQuestion ||
+            secretAnswer !== user.secretAnswer
+        ) return next({message: 'Secret Question and/or Answer is not valid'});
+        const isPasswordValid = pwValidator(newPassword);
+        if (isPasswordValid !== '') return next({message: isPasswordValid});
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newPassword, salt, (err, hash) => {
+                if (err) return next(err);
+                user.password = hash;
+                user.save()
+                    .then(() => res.json({
+                        success: true,
+                        message: 'Password successfully changed.'
+                    }))
+                    .catch(err => next(err));
+            })
+        });
     });
-  });
 });
 
 module.exports = router;

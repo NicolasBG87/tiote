@@ -4,12 +4,11 @@
  * @type {{mongoURI: string, jwtKey: string}}
  */
 module.exports = {
-  mongoURI: process.env.MONGODB_URI,
-  jwtKey: process.env.JWT_KEY,
-  cloudinary: {
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
-  },
-  sendGrid: process.env.SENDGRID_API_KEY
+    mongoURI: 'mongodb+srv://rootAdmin:somitesa123@cluster0-tgku0.mongodb.net/tiote?retryWrites=true',
+    jwtKey: 'g8bqe5qFBsSCZQRsXuT4gAN3',
+    cloudinary: {
+        cloud_name: 'nbojanovic',
+        api_key: '934344831676576',
+        api_secret: 'c2qNtEJ_MmyG7ns7pF-cGUZYWDI'
+    }
 };

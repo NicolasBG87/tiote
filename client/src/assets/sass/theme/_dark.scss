@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
 
-$bg-gradient: linear-gradient(30deg, #212332 0%, #474975 70%);
+$bg-gradient: linear-gradient(30deg, #212332, #474975);
 
 $primary: #39385A;
 $primary-light: #46436B;
@@ -21,15 +21,15 @@ $text-placeholder: rgba(#E5E0F5, .5);
 $disabled: #BDBDBD;
 
 html {
-  font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 * {
-  outline: none;
+    outline: none;
 }
 
 body {
-  background: $bg-gradient no-repeat;
-  min-height: 100vh;
-  color: $text-primary;
+    background: $bg-gradient no-repeat;
+    min-height: 100vh;
+    color: $text-primary;
 }
