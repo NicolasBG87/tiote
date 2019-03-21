@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Spinner             from '../components/Spinner';
+import React, { useState } from "react";
+import Spinner from "../components/Spinner";
 
 export const SpinnerContext = React.createContext();
 export const SpinnerProvider = props => {
@@ -21,7 +21,7 @@ export const SpinnerProvider = props => {
           hideSpinner
         }}
       >
-        {spinner ? <Spinner/> : null}
+        {spinner ? <Spinner /> : null}
         {props.children}
       </SpinnerContext.Provider>
     </React.Fragment>

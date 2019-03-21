@@ -1,5 +1,8 @@
-import React from 'react';
+import React from "react";
 
 export const ContextProviders = ({ contextProviders, children }) => {
-  return contextProviders.reduceRight((children, parent, index) => React.cloneElement(parent, { children }), children);
+  return contextProviders.reduceRight(
+    (children, parent, index) => React.cloneElement(parent, { children }),
+    children
+  );
 };
